@@ -1,8 +1,8 @@
-package com.javajabka.x6order.model;
+package com.javajabka.x6order.exception;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.javajabka.x6order.exception.BadRequestException;
+
 import org.springframework.http.HttpMethod;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.web.client.ResponseErrorHandler;

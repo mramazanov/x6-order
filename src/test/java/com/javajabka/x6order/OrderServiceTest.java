@@ -49,11 +49,8 @@ public class OrderServiceTest {
 
     @Test
     public void shouldReturnError_whenUserIdIsNotExist() {
-        Mockito.when(
-                restTemplate.getForObject("http://localhost:8081/api/v1/user/{id}", UserResponse.class, 100L)
-                ).thenThrow(
-                        new BadRequestException("Не удалось найти пользователя с id = 100")
-        );
+        Mockito.when(restTemplate.getForObject("http://localhost:8081/api/v1/user/{id}", UserResponse.class, 100L))
+                .thenThrow(new BadRequestException("Не удалось найти пользователя с id = 100"));
         OrderRequest orderRequest = buildOrderRequest(100L, 1L, 10L);
         final BadRequestException exception = Assertions.assertThrows(
                 BadRequestException.class, () -> orderService.createOrder(orderRequest)

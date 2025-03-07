@@ -13,15 +13,9 @@ import org.springframework.stereotype.Repository;
 public class OrderRepository {
 
     private static final String INSERT = """
-            WITH insert_order AS (
-                INSERT INTO x6order.order (userId, productId, quantity)
-                VALUES (:userId, :productId, :quantity)
-                RETURNING *
-            ), insert_meta_create_order AS (
-                INSERT INTO x6order.meta_order_create (id, create_date)
-                (SELECT insert_order.id, now() FROM insert_order)
-            )
-            SELECT * FROM insert_order;
+            INSERT INTO x6order.order (userId, productId, quantity, create_date)
+            VALUES (:userId, :productId, :quantity, now())
+            RETURNING *
             """;
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
@@ -44,5 +38,4 @@ public class OrderRepository {
 
         return params;
     }
-
 }

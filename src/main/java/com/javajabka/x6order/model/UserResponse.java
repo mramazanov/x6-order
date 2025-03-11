@@ -2,9 +2,7 @@ package com.javajabka.x6order.model;
 
 import lombok.Builder;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
 @Data
 @Builder
 public class UserResponse {

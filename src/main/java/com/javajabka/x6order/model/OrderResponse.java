@@ -2,16 +2,13 @@ package com.javajabka.x6order.model;
 
 import lombok.Builder;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
-
-import java.io.Serializable;
+import java.util.List;
 
 @Data
 @Builder
-@RequiredArgsConstructor
-public class OrderResponse implements Serializable {
+public class OrderResponse {
     private final Long id;
     private final Long userId;
-    private final Long productId;
+    private final List<Long> products;
     private final Long quantity;
 }

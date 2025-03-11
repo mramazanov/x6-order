@@ -15,6 +15,9 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Arrays;
+import java.util.List;
+
 @ExtendWith(MockitoExtension.class)
 public class OrderServiceTest {
 
@@ -29,8 +32,11 @@ public class OrderServiceTest {
 
     @Test
     public void createOrder_valid() {
-        OrderRequest orderRequest = buildOrderRequest(1L, 1L, 10l);
+        OrderRequest orderRequest = buildOrderRequest(1L, Arrays.asList(1L, 2L, 3L), 10L);
         OrderResponse orderResponse = buildOrderResponse(1L, orderRequest);
+        Mockito.when(restTemplate.getForObject("http://localhost:8082/api/v1/product/exists?ids={ids}", List.class, "1,2,3"))
+                .thenReturn(Arrays.asList(1L, 2L, 3L)).thenReturn(null);
+        Mockito.when(restTemplate.getForObject("http://localhost:8081/api/v1/user?id={id}", UserResponse.class, orderRequest.getUserId())).thenReturn(Mockito.mock(UserResponse.class));
         Mockito.when(orderRepository.createOrder(orderRequest)).thenReturn(orderResponse);
         OrderResponse createdOrder = orderService.createOrder(orderRequest);
         Assertions.assertEquals(createdOrder.getId(), orderResponse.getId());
@@ -39,7 +45,7 @@ public class OrderServiceTest {
 
     @Test
     public void shouldReturnError_whenUserIdIsNull() {
-        OrderRequest orderRequest = buildOrderRequest(null, 1L, 10L);
+        OrderRequest orderRequest = buildOrderRequest(null, List.of(1L, 2L), 10L);
 
         final BadRequestException exception = Assertions.assertThrows(
                 BadRequestException.class, () -> orderService.createOrder(orderRequest)
@@ -49,9 +55,9 @@ public class OrderServiceTest {
 
     @Test
     public void shouldReturnError_whenUserIdIsNotExist() {
-        Mockito.when(restTemplate.getForObject("http://localhost:8081/api/v1/user/{id}", UserResponse.class, 100L))
+        Mockito.when(restTemplate.getForObject("http://localhost:8081/api/v1/user?id={id}", UserResponse.class, 100L))
                 .thenThrow(new BadRequestException("Не удалось найти пользователя с id = 100"));
-        OrderRequest orderRequest = buildOrderRequest(100L, 1L, 10L);
+        OrderRequest orderRequest = buildOrderRequest(100L, List.of(1L, 2L), 10L);
         final BadRequestException exception = Assertions.assertThrows(
                 BadRequestException.class, () -> orderService.createOrder(orderRequest)
         );
@@ -62,15 +68,15 @@ public class OrderServiceTest {
         return OrderResponse.builder()
                 .id(userId)
                 .userId(orderRequest.getUserId())
-                .productId(orderRequest.getProductId())
+                .products(orderRequest.getProducts())
                 .quantity(orderRequest.getQuantity())
                 .build();
     }
 
-    private OrderRequest buildOrderRequest(final Long userId, final Long productId, final Long amount) {
+    private OrderRequest buildOrderRequest(final Long userId, final List<Long> productIds, final Long amount) {
         return OrderRequest.builder()
                 .userId(userId)
-                .productId(productId)
+                .products(productIds)
                 .quantity(amount)
                 .build();
     }

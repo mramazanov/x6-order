@@ -13,8 +13,8 @@ import org.springframework.stereotype.Repository;
 public class OrderRepository {
 
     private static final String INSERT = """
-            INSERT INTO x6order.order (userId, productId, quantity, create_date)
-            VALUES (:userId, :productId, :quantity, now())
+            INSERT INTO x6order.order (userId, products, quantity, create_date)
+            VALUES (:userId, :productIds, :quantity, now())
             RETURNING *
             """;
 
@@ -27,12 +27,11 @@ public class OrderRepository {
 
     private MapSqlParameterSource orderToSql(final Long id, final OrderRequest orderRequest) {
         MapSqlParameterSource params = new MapSqlParameterSource();
-
         params.addValue("userId", id);
 
         if (orderRequest != null) {
             params.addValue("userId", orderRequest.getUserId());
-            params.addValue("productId", orderRequest.getProductId());
+            params.addValue("productIds", orderRequest.getProducts().toArray(Long[]::new));
             params.addValue("quantity", orderRequest.getQuantity());
         }
 

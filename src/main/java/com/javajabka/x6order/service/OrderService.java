@@ -23,8 +23,8 @@ public class OrderService {
     public OrderResponse createOrder(final OrderRequest orderRequest) {
         validate(orderRequest);
 
-        getUser(orderRequest);
-        getProducts(orderRequest);
+        checkUser(orderRequest);
+        checkProducts(orderRequest);
 
         return orderRepository.createOrder(orderRequest);
     }
@@ -44,7 +44,7 @@ public class OrderService {
         }
     }
 
-    private void getProducts(OrderRequest orderRequest) {
+    private void checkProducts(OrderRequest orderRequest) {
         String productIds = orderRequest.getProducts().stream().map(Object::toString).collect(Collectors.joining(","));
         List<Long> products = restTemplate.getForObject("http://localhost:8082/api/v1/product/exists?ids={ids}", List.class, productIds);
 
@@ -53,7 +53,7 @@ public class OrderService {
         }
     }
 
-    private void getUser(OrderRequest orderRequest) {
+    private void checkUser(OrderRequest orderRequest) {
         restTemplate.getForObject("http://localhost:8081/api/v1/user/{id}", UserResponse.class, orderRequest.getUserId());
     }
 }

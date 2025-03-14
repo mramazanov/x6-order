@@ -36,7 +36,7 @@ public class OrderServiceTest {
         OrderResponse orderResponse = buildOrderResponse(1L, orderRequest);
         Mockito.when(restTemplate.getForObject("http://localhost:8082/api/v1/product/exists?ids={ids}", List.class, "1,2,3"))
                 .thenReturn(Arrays.asList(1L, 2L, 3L)).thenReturn(null);
-        Mockito.when(restTemplate.getForObject("http://localhost:8081/api/v1/user?id={id}", UserResponse.class, orderRequest.getUserId())).thenReturn(Mockito.mock(UserResponse.class));
+        Mockito.when(restTemplate.getForObject("http://localhost:8081/api/v1/user/{id}", UserResponse.class, orderRequest.getUserId())).thenReturn(Mockito.mock(UserResponse.class));
         Mockito.when(orderRepository.createOrder(orderRequest)).thenReturn(orderResponse);
         OrderResponse createdOrder = orderService.createOrder(orderRequest);
         Assertions.assertEquals(createdOrder.getId(), orderResponse.getId());
@@ -55,7 +55,7 @@ public class OrderServiceTest {
 
     @Test
     public void shouldReturnError_whenUserIdIsNotExist() {
-        Mockito.when(restTemplate.getForObject("http://localhost:8081/api/v1/user?id={id}", UserResponse.class, 100L))
+        Mockito.when(restTemplate.getForObject("http://localhost:8081/api/v1/user/{id}", UserResponse.class, 100L))
                 .thenThrow(new BadRequestException("Не удалось найти пользователя с id = 100"));
         OrderRequest orderRequest = buildOrderRequest(100L, List.of(1L, 2L), 10L);
         final BadRequestException exception = Assertions.assertThrows(

@@ -1,16 +1,14 @@
 package com.javajabka.x6order.exception;
 
 import com.javajabka.x6order.model.ApiError;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
+@Log4j2
 public class ExceptionController {
-
-    private static final Logger log = LoggerFactory.getLogger(ExceptionController.class);
 
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<ApiError> handleBadRequestException(BadRequestException e) {

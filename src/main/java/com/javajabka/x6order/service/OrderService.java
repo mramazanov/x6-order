@@ -54,6 +54,6 @@ public class OrderService {
     }
 
     private void getUser(OrderRequest orderRequest) {
-        restTemplate.getForObject("http://localhost:8081/api/v1/user?id={id}", UserResponse.class, orderRequest.getUserId());
+        restTemplate.getForObject("http://localhost:8081/api/v1/user/{id}", UserResponse.class, orderRequest.getUserId());
     }
 }

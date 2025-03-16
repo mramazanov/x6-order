@@ -9,6 +9,5 @@ import java.util.List;
 public class OrderResponse {
     private final Long id;
     private final Long userId;
-    private final List<Long> products;
-    private final Long quantity;
+    private final List<ProductQuantity> products;
 }

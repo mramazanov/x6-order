@@ -10,6 +10,6 @@ CREATE TABLE x6order.order (
 CREATE TABLE x6order.products (
     id SERIAL PRIMARY KEY,
     order_id INT NOT NULL REFERENCES x6order.order(id),
-    product INT NOT NULL,
+    product_id INT NOT NULL,
     quantity INT NOT NULL
 )

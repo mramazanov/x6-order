@@ -10,6 +10,5 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderRequest {
     private final Long userId;
-    private final List<Long> products;
-    private final Long quantity;
+    private final List<ProductQuantity> products;
 }

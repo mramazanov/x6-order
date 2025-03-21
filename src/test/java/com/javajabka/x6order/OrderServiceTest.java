@@ -1,6 +1,7 @@
 package com.javajabka.x6order;
 
 import com.javajabka.x6order.exception.BadRequestException;
+import com.javajabka.x6order.listener.NotificationProducer;
 import com.javajabka.x6order.model.OrderRequest;
 import com.javajabka.x6order.model.OrderResponse;
 import com.javajabka.x6order.model.ProductQuantity;
@@ -32,7 +33,7 @@ public class OrderServiceTest {
     private OrderRepository orderRepository;
 
     @Mock
-    private OrderNotificationService notificationService;
+    private NotificationProducer notificationProducer;
 
     @InjectMocks
     private OrderService orderService;

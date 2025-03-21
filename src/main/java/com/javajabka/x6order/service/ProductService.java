@@ -6,7 +6,6 @@ import com.javajabka.x6order.model.ProductQuantity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -22,7 +21,7 @@ public class ProductService {
         List<Long> products = restTemplate.getForObject("http://localhost:8082/api/v1/product/exists?ids={ids}", List.class, productIds);
 
         if (products == null || products.size() != orderRequest.getProducts().size()) {
-            throw new BadRequestException(String.format("Продукты с id %s не найдены", products));
+            throw new BadRequestException("Продукты с одним или несколькими id не найдены");
         }
 
         return products;

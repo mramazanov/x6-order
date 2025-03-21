@@ -6,7 +6,10 @@ import com.javajabka.x6order.model.OrderResponse;
 import com.javajabka.x6order.model.ProductQuantity;
 import com.javajabka.x6order.model.UserResponse;
 import com.javajabka.x6order.repository.OrderRepository;
+import com.javajabka.x6order.service.OrderNotificationService;
 import com.javajabka.x6order.service.OrderService;
+import com.javajabka.x6order.service.ProductService;
+import com.javajabka.x6order.service.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,7 +17,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.web.client.RestTemplate;
 import java.util.Arrays;
 import java.util.List;
 
@@ -22,10 +24,16 @@ import java.util.List;
 public class OrderServiceTest {
 
     @Mock
-    private RestTemplate restTemplate;
+    private UserService userService;
+
+    @Mock
+    private ProductService productService;
 
     @Mock
     private OrderRepository orderRepository;
+
+    @Mock
+    private OrderNotificationService notificationService;
 
     @InjectMocks
     private OrderService orderService;
@@ -49,8 +57,8 @@ public class OrderServiceTest {
 
         OrderRequest orderRequest = buildOrderRequest(1L, Arrays.asList(productQuantity_one, productQuantity_two, productQuantity_three));
         OrderResponse orderResponse = buildOrderResponse(1L, orderRequest);
-        Mockito.when(restTemplate.getForObject("http://localhost:8082/api/v1/product/exists?ids={ids}", List.class, "1,2,3")).thenReturn(Arrays.asList(1L, 2L, 3L)).thenReturn(null);
-        Mockito.when(restTemplate.getForObject("http://localhost:8081/api/v1/user/{id}", UserResponse.class, 1L)).thenReturn(Mockito.mock(UserResponse.class));
+        Mockito.when(productService.checkProducts(orderRequest)).thenReturn(null);
+        Mockito.when(userService.checkUser(orderRequest)).thenReturn(Mockito.mock(UserResponse.class));
         Mockito.when(orderRepository.createOrder(orderRequest)).thenReturn(orderResponse);
         OrderResponse createdOrder = orderService.createOrder(orderRequest);
         Assertions.assertEquals(createdOrder.getId(), orderResponse.getId());
@@ -78,9 +86,12 @@ public class OrderServiceTest {
                 .productId(1L)
                 .quantity(100L)
                 .build();
-        Mockito.when(restTemplate.getForObject("http://localhost:8081/api/v1/user/{id}", UserResponse.class, 100L))
-                .thenThrow(new BadRequestException("Не удалось найти пользователя с id = 100"));
-        OrderRequest orderRequest = buildOrderRequest(100L, List.of(productQuantity_one));
+        OrderRequest orderRequest = OrderRequest.builder()
+                .userId(100L)
+                .products(List.of(productQuantity_one))
+                .build();
+
+        Mockito.when(userService.checkUser(orderRequest)).thenThrow(new BadRequestException("Не удалось найти пользователя с id = 100"));
         final BadRequestException exception = Assertions.assertThrows(
                 BadRequestException.class, () -> orderService.createOrder(orderRequest)
         );

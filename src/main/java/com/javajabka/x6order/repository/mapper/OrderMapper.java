@@ -12,7 +12,7 @@ public class OrderMapper implements RowMapper<OrderResponse> {
     public OrderResponse mapRow(ResultSet rs, int rowNum) throws SQLException {
         return OrderResponse.builder()
                 .id(rs.getLong("id"))
-                .userId(rs.getLong("userid"))
+                .userId(rs.getLong("user_id"))
                 .products(null)
                 .build();
     }

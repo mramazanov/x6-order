@@ -6,7 +6,6 @@ import com.javajabka.x6order.model.OrderResponse;
 import com.javajabka.x6order.model.ProductQuantity;
 import com.javajabka.x6order.model.UserResponse;
 import com.javajabka.x6order.repository.OrderRepository;
-import com.javajabka.x6order.service.OrderNotificationService;
 import com.javajabka.x6order.service.OrderService;
 import com.javajabka.x6order.service.ProductService;
 import com.javajabka.x6order.service.UserService;

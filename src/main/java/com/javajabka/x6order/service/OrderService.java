@@ -1,6 +1,7 @@
 package com.javajabka.x6order.service;
 
 import com.javajabka.x6order.exception.BadRequestException;
+import com.javajabka.x6order.listener.NotificationProducer;
 import com.javajabka.x6order.model.OrderRequest;
 import com.javajabka.x6order.model.OrderResponse;
 import com.javajabka.x6order.model.ProductQuantity;
@@ -16,7 +17,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final UserService userService;
     private final ProductService productService;
-    private final OrderNotificationService notificationService;
+    private final NotificationProducer notificationProducer;
 
     @Transactional(rollbackFor = Exception.class)
     public OrderResponse createOrder(final OrderRequest orderRequest) {
@@ -24,9 +25,9 @@ public class OrderService {
 
         userService.checkUser(orderRequest);
         productService.checkProducts(orderRequest);
-
         OrderResponse orderResponse = orderRepository.createOrder(orderRequest);
-        notificationService.orderNotify(orderResponse);
+        notificationProducer.send(orderResponse);
+
         return orderResponse;
     }
 

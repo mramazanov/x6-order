@@ -1,6 +1,7 @@
-package com.javajabka.x6order.model;
+package com.javajabka.x6order.listener;
 
 import com.javajabka.x6order.configuration.RabbitConfigurationProperties;
+import com.javajabka.x6order.model.OrderResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Component;
